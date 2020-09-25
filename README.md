@@ -9,5 +9,5 @@ Repositorio compartido para los TPOs de Programación Concurrente.
 
 ## TPs
 
-1. [Synchronized](sync)
-2. [Semaforos](semaforos)
+1. [Synchronized](src/sync)
+2. [Semaforos](src/semaforos)
