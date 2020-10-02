@@ -1,9 +1,12 @@
 package semaforos.escritores;
 
+import java.util.concurrent.Semaphore;
+
 public class Main {
     public static void main(String[] args) {
         // Turnero
-        Turnero turno = new Turnero(3);
+        // Turnero turno = new Turnero(3);
+        Semaphore turno = new Semaphore(0);
 
         // Letras que quiero imprimir
         char[] ids = {'A', 'B', 'C'};

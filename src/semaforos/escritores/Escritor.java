@@ -1,11 +1,13 @@
 package semaforos.escritores;
 
+import java.util.concurrent.Semaphore;
+
 public class Escritor implements Runnable {
     private int id;
     private char escribir;
-    private Turnero turno;
+    private Semaphore turno;
 
-    public Escritor(int identificador, char letra, Turnero turnero) {
+    public Escritor(int identificador, char letra, Semaphore turnero) {
         this.id = identificador;
         this.escribir = letra;
         this.turno = turnero;
@@ -16,18 +18,17 @@ public class Escritor implements Runnable {
         for (int j = 0; j < this.id; j++) {
             System.out.print(this.escribir);
         }
-        this.turno.incrementar();
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < 5; i++) {
-            while (this.turno.getTurno() != this.id) {
-                // No es mi turno, le doy lugar a otro thread (o no).
-                Thread.yield();
-            }
-            // Es mi turno, escribo
+        try{
+            this.turno.acquire(this.id);
             escribir();
+        } catch (InterruptedException ex){
+          ex.printStackTrace();
+        } finally {
+            this.turno.release(this.id);
         }
     }
 }

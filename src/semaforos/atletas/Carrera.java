@@ -6,7 +6,8 @@ public class Carrera {
 
     public static void main(String[] args) {
         int participantes=4;
-        Semaphore testigo = new Semaphore(1);
+        //Semaphore testigo = new Semaphore(0);
+        Testigo testigo = new Testigo(participantes);
         Corredor[] corredores = new Corredor[participantes];
         Thread[] hilosCorredores = new Thread[participantes];
 
@@ -15,6 +16,8 @@ public class Carrera {
             hilosCorredores[i] = new Thread(corredores[i], "Corredor: " +(i+1));
             hilosCorredores[i].start();
         }
+
+        testigo.iniciarCarrera();
     }
 
 }

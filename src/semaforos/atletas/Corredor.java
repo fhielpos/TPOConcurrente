@@ -4,11 +4,11 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 public class Corredor implements Runnable {
-    private Semaphore testigo;
+    private Testigo testigo;
     private int id;
 
-    public Corredor(Semaphore semaforo, int unId){
-        this.testigo = semaforo;
+    public Corredor(Testigo unTestigo, int unId){
+        this.testigo = unTestigo;
         this.id = unId;
     }
 
@@ -24,14 +24,12 @@ public class Corredor implements Runnable {
     @Override
     public void run() {
         try{
-            this.testigo.acquire(this.id);
+            this.testigo.agarrarTestigo((this.id));
             System.out.println(Thread.currentThread().getName() +" agarrando testigo");
             correr();
             System.out.println(Thread.currentThread().getName() +" liberando testigo: " +System.currentTimeMillis());
-            this.testigo.release((this.id + 1));
-
-        } catch (InterruptedException ex){
-            ex.printStackTrace();
+        } finally {
+            this.testigo.soltarTestigo((this.id));
         }
     }
 }
