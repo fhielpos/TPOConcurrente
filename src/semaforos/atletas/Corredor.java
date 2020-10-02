@@ -5,9 +5,11 @@ import java.util.concurrent.Semaphore;
 
 public class Corredor implements Runnable {
     private Semaphore testigo;
+    private int id;
 
-    public Corredor(Semaphore semaforo){
+    public Corredor(Semaphore semaforo, int unId){
         this.testigo = semaforo;
+        this.id = unId;
     }
 
     private void correr(){
@@ -22,11 +24,11 @@ public class Corredor implements Runnable {
     @Override
     public void run() {
         try{
-            this.testigo.acquire();
+            this.testigo.acquire(this.id);
             System.out.println(Thread.currentThread().getName() +" agarrando testigo");
             correr();
-            System.out.println("Liberando testigo: " +System.currentTimeMillis());
-            this.testigo.release();
+            System.out.println(Thread.currentThread().getName() +" liberando testigo: " +System.currentTimeMillis());
+            this.testigo.release((this.id + 1));
 
         } catch (InterruptedException ex){
             ex.printStackTrace();
