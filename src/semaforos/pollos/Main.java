@@ -16,8 +16,6 @@ public class Main {
             }
 
 
-
-
         } catch (Exception ex) {
             ex.printStackTrace();
             // Vale la pena usar logger aca?

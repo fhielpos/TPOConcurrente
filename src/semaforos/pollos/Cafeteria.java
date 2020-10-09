@@ -46,7 +46,8 @@ public class Cafeteria {
         this.semMozo.release();
         try {
             System.out.println(Thread.currentThread().getName() + " comiendo");
-            Thread.sleep(new Random().nextInt(1000) + 500);
+            Thread.sleep(new Random().nextInt(1000));
+            System.out.println(Thread.currentThread().getName() + " terminando de comer");
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -71,7 +72,8 @@ public class Cafeteria {
             }
             this.lockCapacidad.unlock();
             return true;
-        } else
-            return false;
+        }
+        this.lockCapacidad.unlock();
+        return false;
     }
 }
