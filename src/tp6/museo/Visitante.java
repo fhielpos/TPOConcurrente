@@ -18,10 +18,11 @@ public class Visitante implements Runnable {
             museo.entrarSala();
         try{
             System.out.println(Thread.currentThread().getName() +" esta en la sala, durmiendo...");
-            Thread.sleep(new Random().nextInt(1500)+1000);
+            Thread.sleep(new Random().nextInt(1500)+5000);
         } catch (InterruptedException ex){
             ex.printStackTrace();
         }
+        System.out.println(Thread.currentThread().getName() +" saliendo de la sala");
         museo.salirSala();
     }
 }

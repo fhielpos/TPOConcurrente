@@ -9,20 +9,28 @@ public class Sala {
     private final Condition visitante;
 
     private int capacidadSala;
+    private int capacidadMaxima;
     private int personasDentro;
-    private ReentrantLock lockTemp = new ReentrantLock();
     private int temperatura;
+    private int capacidadReducida = 35;
 
     public Sala(int limiteSala) {
         this.personasDentro = 0;
         this.capacidadSala = limiteSala;
+        this.capacidadMaxima = limiteSala;
         this.jubilado = lockSala.newCondition();
         this.visitante = lockSala.newCondition();
     }
 
-    public void restringirCapacidad(int nuevaCapacidad) {
+    public void restringirCapacidad() {
         this.lockSala.lock();
-        this.capacidadSala = nuevaCapacidad;
+        this.capacidadSala = this.capacidadReducida;
+        this.lockSala.unlock();
+    }
+
+    public void restaurarCapacidad() {
+        this.lockSala.lock();
+        this.capacidadSala = this.capacidadMaxima;
         this.lockSala.unlock();
     }
 
@@ -68,13 +76,16 @@ public class Sala {
         lockSala.unlock();
     }
 
+    public int getCapacidad(){
+        return this.capacidadSala;
+    }
+
     public int getTemperatura() {
         return this.temperatura;
     }
 
-    private void subirTemperatura(int newTemperatura) {
-        lockTemp.lock();
-        this.temperatura = newTemperatura;
-        lockTemp.unlock();
+    public void setTemperatura(int nuevaTemp){
+        this.temperatura = nuevaTemp;
     }
+
 }
