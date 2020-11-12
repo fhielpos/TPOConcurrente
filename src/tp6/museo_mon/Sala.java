@@ -5,6 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Sala {
     private int capacidadSala;
+
     private int capacidadMaxima;
     private int personasDentro;
     private int temperatura;
@@ -14,6 +15,13 @@ public class Sala {
         this.personasDentro = 0;
         this.capacidadSala = limiteSala;
         this.capacidadMaxima = limiteSala;
+    }
+
+    public Sala(int maximo, int minimo) {
+        this.personasDentro = 0;
+        this.capacidadSala = maximo;
+        this.capacidadMaxima = maximo;
+        this.capacidadReducida = minimo;
     }
 
     public synchronized void restringirCapacidad() {
@@ -58,7 +66,7 @@ public class Sala {
 //        }
     }
 
-    public synchronized int getCapacidad(){
+    public synchronized int getCapacidad() {
         return this.capacidadSala;
     }
 
@@ -66,8 +74,11 @@ public class Sala {
         return this.temperatura;
     }
 
-    public synchronized void setTemperatura(int nuevaTemp){
+    public synchronized void setTemperatura(int nuevaTemp) {
         this.temperatura = nuevaTemp;
     }
 
+    public synchronized void setCapacidad(int nuevaCapacidad) {
+        this.capacidadSala = nuevaCapacidad;
+    }
 }
