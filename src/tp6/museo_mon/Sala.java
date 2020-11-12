@@ -4,18 +4,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Sala {
-    private int capacidadSala;
+    private int capacidadSala;      // Capacidad actual
+    private int capacidadMaxima;    // Capacidad maxima
+    private int capacidadReducida = 35; // Capacidad minima
 
-    private int capacidadMaxima;
     private int personasDentro;
     private int temperatura;
-    private int capacidadReducida = 35;
-
-    public Sala(int limiteSala) {
-        this.personasDentro = 0;
-        this.capacidadSala = limiteSala;
-        this.capacidadMaxima = limiteSala;
-    }
 
     public Sala(int maximo, int minimo) {
         this.personasDentro = 0;
@@ -35,6 +29,7 @@ public class Sala {
     public synchronized void entrarSala() {
         try {
             while (personasDentro >= capacidadSala) {
+                // Si esta lleno, espero
                 System.out.println("Sala llena esperando");
                 this.wait();
             }
@@ -48,7 +43,9 @@ public class Sala {
     public synchronized void entrarSalaJubilado() {
         try {
             while (personasDentro >= capacidadSala) {
+                // Si esta lleno, espero
                 System.out.println("Sala llena jubilado esperando");
+                // FALTA DISCRIMINAR JUBILADOS DE VISITANTES
                 this.wait();
             }
             this.personasDentro++;
@@ -59,11 +56,8 @@ public class Sala {
 
     public synchronized void salirSala() {
         this.personasDentro--;
-//        if (this.lockSala.hasWaiters(jubilado)) {
-//           jubilado.signalAll();
-//        } else {
-//            this.notifyAll();
-//        }
+        // FALTA VERIFICAR QUE NO HAYA JUBILADOS ESPERANDO
+        this.notify();
     }
 
     public synchronized int getCapacidad() {
