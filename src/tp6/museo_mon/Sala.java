@@ -1,8 +1,8 @@
 package tp6.museo_mon;
 /**
- *
  * @author Admin
  */
+
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Sala {
@@ -40,7 +40,7 @@ public class Sala {
             // Si esta lleno, espero
             System.out.println("Sala llena, " + Thread.currentThread().getName() + " esperando");
             lockMetodos.unlock();
-            synchronized(monitorRegular){
+            synchronized (monitorRegular) {
                 monitorRegular.wait();
             }
             lockMetodos.lock();
@@ -55,14 +55,14 @@ public class Sala {
         while (personasDentro >= capacidadSala) {
             // Si esta lleno, espero
             System.out.println("Sala llena, " + Thread.currentThread().getName() + " esperando");
-            if(!yaEstabaEsperando){
+            if (!yaEstabaEsperando) {
                 jubiladosEsperando = true;
                 cantJubiladosEsperando++;
                 yaEstabaEsperando = true;
                 System.out.println("\n hay " + cantJubiladosEsperando + " jubilados esperando  \n");
             }
             lockMetodos.unlock();
-            synchronized(monitorJubilados){
+            synchronized (monitorJubilados) {
                 monitorJubilados.wait();
             }
             lockMetodos.lock();
@@ -74,19 +74,18 @@ public class Sala {
     public void salirSala() {
         lockMetodos.lock();
         this.personasDentro--;
-        if(jubiladosEsperando){
-            synchronized(monitorJubilados){
+        if (jubiladosEsperando) {
+            synchronized (monitorJubilados) {
                 monitorJubilados.notify();
             }
             cantJubiladosEsperando--;
             System.out.println("\n hay " + cantJubiladosEsperando + " jubilados esperando  \n");
-        }
-        else{
-            synchronized(monitorRegular){
+        } else {
+            synchronized (monitorRegular) {
                 monitorRegular.notify();
             }
         }
-        if(cantJubiladosEsperando == 0){
+        if (cantJubiladosEsperando == 0) {
             System.out.println("NO HAY JUBILADOS ESPERANDO");
             jubiladosEsperando = false;
         }
