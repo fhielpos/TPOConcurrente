@@ -1,6 +1,8 @@
 package tp6.museo_mon;
-
-import java.util.concurrent.locks.Condition;
+/**
+ *
+ * @author Admin
+ */
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Sala {
@@ -10,6 +12,12 @@ public class Sala {
 
     private int personasDentro;
     private int temperatura;
+
+    private final Object monitorJubilados = new Object();
+    private final Object monitorRegular = new Object();
+    private boolean jubiladosEsperando = false;
+    private int cantJubiladosEsperando = 0;
+    ReentrantLock lockMetodos = new ReentrantLock();
 
     public Sala(int maximo, int minimo) {
         this.personasDentro = 0;
@@ -26,38 +34,63 @@ public class Sala {
         this.capacidadSala = this.capacidadMaxima;
     }
 
-    public synchronized void entrarSala() {
-        try {
-            while (personasDentro >= capacidadSala) {
-                // Si esta lleno, espero
-                System.out.println("Sala llena esperando");
-                this.wait();
+    public void entrarSala() throws InterruptedException {
+        lockMetodos.lock();
+        while (personasDentro >= capacidadSala) {
+            // Si esta lleno, espero
+            System.out.println("Sala llena, " + Thread.currentThread().getName() + " esperando");
+            lockMetodos.unlock();
+            synchronized(monitorRegular){
+                monitorRegular.wait();
             }
-            this.personasDentro++;
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            lockMetodos.lock();
         }
+        this.personasDentro++;
+        lockMetodos.unlock();
     }
 
-
-    public synchronized void entrarSalaJubilado() {
-        try {
-            while (personasDentro >= capacidadSala) {
-                // Si esta lleno, espero
-                System.out.println("Sala llena jubilado esperando");
-                // FALTA DISCRIMINAR JUBILADOS DE VISITANTES
-                this.wait();
+    public void entrarSalaJubilado() throws InterruptedException {
+        boolean yaEstabaEsperando = false;
+        lockMetodos.lock();
+        while (personasDentro >= capacidadSala) {
+            // Si esta lleno, espero
+            System.out.println("Sala llena, " + Thread.currentThread().getName() + " esperando");
+            if(!yaEstabaEsperando){
+                jubiladosEsperando = true;
+                cantJubiladosEsperando++;
+                yaEstabaEsperando = true;
+                System.out.println("\n hay " + cantJubiladosEsperando + " jubilados esperando  \n");
             }
-            this.personasDentro++;
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            lockMetodos.unlock();
+            synchronized(monitorJubilados){
+                monitorJubilados.wait();
+            }
+            lockMetodos.lock();
         }
+        this.personasDentro++;
+        lockMetodos.unlock();
     }
 
-    public synchronized void salirSala() {
+    public void salirSala() {
+        lockMetodos.lock();
         this.personasDentro--;
-        // FALTA VERIFICAR QUE NO HAYA JUBILADOS ESPERANDO
-        this.notify();
+        if(jubiladosEsperando){
+            synchronized(monitorJubilados){
+                monitorJubilados.notify();
+            }
+            cantJubiladosEsperando--;
+            System.out.println("\n hay " + cantJubiladosEsperando + " jubilados esperando  \n");
+        }
+        else{
+            synchronized(monitorRegular){
+                monitorRegular.notify();
+            }
+        }
+        if(cantJubiladosEsperando == 0){
+            System.out.println("NO HAY JUBILADOS ESPERANDO");
+            jubiladosEsperando = false;
+        }
+        lockMetodos.unlock();
     }
 
     public synchronized int getCapacidad() {
