@@ -1,7 +1,6 @@
 package semaforos.atletas;
 
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 
 public class Corredor implements Runnable {
     private Testigo testigo;

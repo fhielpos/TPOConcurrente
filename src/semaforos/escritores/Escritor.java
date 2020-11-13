@@ -28,7 +28,7 @@ public class Escritor implements Runnable {
         } catch (InterruptedException ex){
           ex.printStackTrace();
         } finally {
-            this.turno.release(this.id);
+            this.turno.release(this.id+1);
         }
     }
 }
