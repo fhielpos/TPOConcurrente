@@ -19,7 +19,7 @@ public class CentroHemoterapia {
     private int cantSillas;
     private int sillasDisponibles;
 
-    public CentroHemoterapia(int sillas, int camillas, int revistas){
+    public CentroHemoterapia(int sillas, int camillas, int revistas) {
         this.cantCamillas = sillas;
         this.sillasDisponibles = this.cantSillas;
 
@@ -30,13 +30,13 @@ public class CentroHemoterapia {
         this.revistasDisponibles = this.cantRevistas;
     }
 
-    public void entrarSala(){
+    public void entrarSala() {
         boolean poseeRevista = false;
         boolean estaSentado = false;
 
-        try{
+        try {
             salaEspera.lock();
-            while(camillasDisponibles == 0){
+            while (camillasDisponibles == 0) {
                 // Ver si hay sillas disponibles
                 if (this.sillasDisponibles != 0) {
                     this.sillasDisponibles--;
@@ -62,13 +62,13 @@ public class CentroHemoterapia {
             }
 
             // Hay camillas disponibles, liberar recursos
-            if(estaSentado)
+            if (estaSentado)
                 this.sillasDisponibles++;
-            if(poseeRevista){
+            if (poseeRevista) {
                 this.revistasDisponibles++;
                 this.revistas.signalAll();
             }
-        } catch (InterruptedException ex){
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
         } finally {
             salaEspera.unlock();
@@ -76,7 +76,7 @@ public class CentroHemoterapia {
 
     }
 
-    public void salir(){
+    public void salir() {
         this.salaEspera.lock();
         this.camillasDisponibles++;
         this.camillas.signal();
