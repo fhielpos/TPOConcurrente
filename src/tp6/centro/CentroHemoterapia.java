@@ -96,7 +96,7 @@ public class CentroHemoterapia {
         this.camillasDisponibles++;
         this.turno++;
         System.out.println(Thread.currentThread().getName() + " saliendo" + " TURNO: " + this.turno);
-        this.camillas.signal();
+        this.camillas.signalAll();
         this.salaEspera.unlock();
     }
 
