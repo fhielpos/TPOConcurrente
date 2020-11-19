@@ -15,9 +15,14 @@ public class Donante implements Runnable {
         centro.entrarSala();
         // Donando
         try {
+            System.out.println(Thread.currentThread().getName() + " donando...");
             Thread.sleep(new Random().nextInt(4000) + 1500);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+
+        // Saliendo del centro
+        System.out.println(Thread.currentThread().getName() + " saliendo");
+        centro.salir();
     }
 }

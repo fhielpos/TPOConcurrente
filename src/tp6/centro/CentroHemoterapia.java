@@ -19,6 +19,9 @@ public class CentroHemoterapia {
     private int cantSillas;
     private int sillasDisponibles;
 
+    private int turno;
+    private int pacientes = 0;
+
     public CentroHemoterapia(int sillas, int camillas, int revistas) {
         this.cantCamillas = sillas;
         this.sillasDisponibles = this.cantSillas;
@@ -28,15 +31,23 @@ public class CentroHemoterapia {
 
         this.cantRevistas = revistas;
         this.revistasDisponibles = this.cantRevistas;
+
+        this.turno = this.camillasDisponibles;
     }
 
     public void entrarSala() {
         boolean poseeRevista = false;
         boolean estaSentado = false;
+        int numeroTurno;
 
         try {
             salaEspera.lock();
-            while (camillasDisponibles == 0) {
+            this.pacientes++;
+            numeroTurno = this.pacientes;
+
+            // Mientras no sea mi turno o no haya camillas
+            while (this.turno < numeroTurno || camillasDisponibles == 0) {
+
                 // Ver si hay sillas disponibles
                 if (this.sillasDisponibles != 0) {
                     this.sillasDisponibles--;
@@ -52,6 +63,7 @@ public class CentroHemoterapia {
                     this.revistasDisponibles--;
                     poseeRevista = true;
                 }
+
                 // Fin condicion revistas
                 if (estaSentado && poseeRevista)
                     // Posee todos los recursos, nomas espera a que se libere una camilla
@@ -68,6 +80,9 @@ public class CentroHemoterapia {
                 this.revistasDisponibles++;
                 this.revistas.signalAll();
             }
+            System.out.println("Thread entrando a donar: " + Thread.currentThread().getName() + " TURNO: " + this.turno + " PACIENTE: " + numeroTurno);
+            this.camillasDisponibles--;
+
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         } finally {
@@ -79,6 +94,8 @@ public class CentroHemoterapia {
     public void salir() {
         this.salaEspera.lock();
         this.camillasDisponibles++;
+        this.turno++;
+        System.out.println(Thread.currentThread().getName() + " saliendo" + " TURNO: " + this.turno);
         this.camillas.signal();
         this.salaEspera.unlock();
     }
