@@ -46,7 +46,7 @@ public class CentroHemoterapia {
             while (this.turno < miTurno) {
 
                 // Ver si hay sillas disponibles
-                if (this.sillasDisponibles != 0) {
+                if (this.sillasDisponibles != 0 && !estaSentado) {
                     this.sillasDisponibles--;
                     estaSentado = true;
                 }
