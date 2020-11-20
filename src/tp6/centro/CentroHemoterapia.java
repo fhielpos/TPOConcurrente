@@ -59,7 +59,7 @@ public class CentroHemoterapia {
 
                 // Inicio condicion revistas
                 if (!poseeRevista) {
-                    if (this.revistasDisponibles == 0) {
+                    while (this.revistasDisponibles == 0) {
                         // Ver la tele y esperar por una revista
                         this.condRevistas.await(1000, TimeUnit.MILLISECONDS);
                     }
@@ -84,8 +84,8 @@ public class CentroHemoterapia {
                 this.revistasDisponibles++;
                 this.condRevistas.signalAll();
             }
-
-            System.out.println("Thread entrando a donar: " + Thread.currentThread().getName() + " TURNO: " + this.turno + " PACIENTE: " + miTurno);
+            // Solo para debug
+            // System.out.println("Thread entrando a donar: " + Thread.currentThread().getName() + " TURNO: " + this.turno + " PACIENTE: " + miTurno);
             this.camillasDisponibles--;
 
         } catch (InterruptedException ex) {
@@ -100,7 +100,8 @@ public class CentroHemoterapia {
         this.salaEspera.lock();
         this.camillasDisponibles++;
         this.turno++;
-        System.out.println(Thread.currentThread().getName() + " saliendo" + " TURNO: " + this.turno);
+        // Solo para debug
+        // System.out.println(Thread.currentThread().getName() + " saliendo" + " TURNO: " + this.turno);
         this.condCamillas.signalAll();
         this.salaEspera.unlock();
     }
