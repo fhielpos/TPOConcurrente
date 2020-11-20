@@ -77,20 +77,23 @@ public class CentroHemoterapia {
                     this.condCamillas.await(1000, TimeUnit.MILLISECONDS);
             }
 
-            // Hay camillas disponibles, liberar recursos
+            // Ocupar camilla
+            this.camillasDisponibles--;
+
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        } finally {
+            // Liberar recursos
             if (estaSentado)
                 this.sillasDisponibles++;
             if (poseeRevista) {
                 this.revistasDisponibles++;
                 this.condRevistas.signalAll();
             }
+
             // Solo para debug
             // System.out.println("Thread entrando a donar: " + Thread.currentThread().getName() + " TURNO: " + this.turno + " PACIENTE: " + miTurno);
-            this.camillasDisponibles--;
 
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        } finally {
             salaEspera.unlock();
         }
 
