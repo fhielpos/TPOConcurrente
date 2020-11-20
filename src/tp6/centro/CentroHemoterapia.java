@@ -10,27 +10,21 @@ public class CentroHemoterapia {
     private Condition condCamillas = salaEspera.newCondition();
     private Condition condRevistas = salaEspera.newCondition();
 
-    private int cantRevistas;
     private int revistasDisponibles;
 
-    private int cantCamillas;
     private int camillasDisponibles;
 
-    private int cantSillas;
     private int sillasDisponibles;
 
     private int turno;      // Turno para saber a que paciente atender
     private int pacientes;  // Cuenta cuantos pacientes pasaron en el dia
 
     public CentroHemoterapia(int limiteSillas, int limiteCamillas, int limiteRevistas) {
-        this.cantCamillas = limiteSillas;
-        this.sillasDisponibles = this.cantSillas;
+        this.sillasDisponibles = limiteSillas;
 
-        this.cantCamillas = limiteCamillas;
-        this.camillasDisponibles = this.cantCamillas;
+        this.camillasDisponibles = limiteCamillas;
 
-        this.cantRevistas = limiteRevistas;
-        this.revistasDisponibles = this.cantRevistas;
+        this.revistasDisponibles = limiteRevistas;
 
         this.turno = this.camillasDisponibles;
         this.pacientes = 0;
@@ -47,9 +41,9 @@ public class CentroHemoterapia {
             this.pacientes++;
             miTurno = this.pacientes;
 
-            // Mientras no sea mi turno o no haya camillas
+            // Mientras no sea mi turno
             // El turno < miTurno es por si sale mas de un donante a la vez, para que no se pase su turno
-            while (this.turno <= miTurno || camillasDisponibles == 0) {
+            while (this.turno < miTurno) {
 
                 // Ver si hay sillas disponibles
                 if (this.sillasDisponibles != 0) {
@@ -59,12 +53,13 @@ public class CentroHemoterapia {
 
                 // Inicio condicion revistas
                 if (!poseeRevista) {
-                    while (this.revistasDisponibles == 0) {
+                    if (this.revistasDisponibles == 0) {
                         // Ver la tele y esperar por una revista
-                        this.condRevistas.await(1000, TimeUnit.MILLISECONDS);
+                        this.condRevistas.await(3000, TimeUnit.MILLISECONDS);
+                    } else {
+                        this.revistasDisponibles--;
+                        poseeRevista = true;
                     }
-                    this.revistasDisponibles--;
-                    poseeRevista = true;
                 }
                 // Fin condicion revistas
 

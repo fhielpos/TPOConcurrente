@@ -13,10 +13,11 @@ public class Donante implements Runnable {
     public void run() {
         // Yendo a donar
         centro.entrarSala();
+        
         // Donando
         try {
             System.out.println(Thread.currentThread().getName() + " donando...");
-            Thread.sleep(new Random().nextInt(4000) + 1500);
+            Thread.sleep(new Random().nextInt(4000) + 2500);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
