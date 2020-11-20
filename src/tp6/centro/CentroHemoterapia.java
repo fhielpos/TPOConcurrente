@@ -49,7 +49,7 @@ public class CentroHemoterapia {
 
             // Mientras no sea mi turno o no haya camillas
             // El turno < miTurno es por si sale mas de un donante a la vez, para que no se pase su turno
-            while (this.turno < miTurno || camillasDisponibles == 0) {
+            while (this.turno <= miTurno || camillasDisponibles == 0) {
 
                 // Ver si hay sillas disponibles
                 if (this.sillasDisponibles != 0) {
@@ -59,7 +59,7 @@ public class CentroHemoterapia {
 
                 // Inicio condicion revistas
                 if (!poseeRevista) {
-                    while (this.revistasDisponibles == 0) {
+                    if (this.revistasDisponibles == 0) {
                         // Ver la tele y esperar por una revista
                         this.condRevistas.await(1000, TimeUnit.MILLISECONDS);
                     }
